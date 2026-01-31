@@ -1,412 +1,452 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Week 1 Assessment | Live</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .progress-transition { transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .option-hover:hover { transform: translateY(-2px); }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-slide { animation: slideIn 0.3s ease-out forwards; }
-        .pulse-sync { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HTML Mastery Quiz — Student</title>
+
+  <!-- Tailwind CDN (for quick prototyping) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Simple color theme: teal (was indigo) -->
+  <style>
+    :root {
+      --brand: #0f766e; /* teal-700 */
+      --brand-500: #14b8a6; /* teal-400 */
+      --muted: #64748b;
+    }
+    .brand-bg { background-color: var(--brand); }
+    .brand-500 { color: var(--brand-500); }
+    .brand-border { border-color: rgba(15,118,110,0.08); }
+    .teacher-login-btn { background: var(--brand); }
+  </style>
+
+  <!-- Icons (Font Awesome) -->
+  <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 </head>
-<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+<body class="bg-slate-50 text-slate-800 antialiased">
 
-    <!-- Global Sync Status -->
-    <div id="sync-status" class="fixed top-4 right-4 z-50 flex items-center gap-2 bg-white/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-200 text-[10px] font-bold uppercase tracking-widest text-slate-400 shadow-sm hidden">
-        <div class="w-2 h-2 bg-green-500 rounded-full pulse-sync"></div>
-        <span>Syncing Data...</span>
+  <main class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-4xl">
+
+      <!-- LOGIN VIEW -->
+      <section id="login-view" class="bg-white p-10 rounded-3xl shadow-xl text-center max-w-md mx-auto border brand-border">
+        <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 text-teal-600">
+          <i class="fa-solid fa-user-graduate text-3xl"></i>
+        </div>
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Student Login</h1>
+        <p class="text-slate-500 mb-6">Enter your name to sign in or create an account.</p>
+
+        <input id="student-name-input" type="text" placeholder="Full Name (e.g. John Doe)"
+               class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4 focus:ring-2 focus:ring-teal-300 outline-none transition-all font-bold text-center" />
+
+        <div class="flex gap-3 justify-center">
+          <button onclick="handleLogin()" class="px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold shadow hover:brightness-95">Login</button>
+          <button onclick="handleCreateAccount()" class="px-6 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50">Create Account</button>
+        </div>
+      </section>
+
+      <!-- MAIN MENU -->
+      <section id="menu-view" class="hidden mt-8">
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <div class="text-sm text-slate-500 uppercase font-bold">Welcome</div>
+              <div class="text-2xl font-black" id="display-name">Student</div>
+            </div>
+            <div class="flex gap-3 items-center">
+              <div class="text-right">
+                <div class="text-xs text-slate-400 uppercase">Total Points</div>
+                <div class="text-2xl font-black" id="stat-score">0</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-slate-400 uppercase">Modules Done</div>
+                <div class="text-2xl font-black" id="stat-completed">0/3</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-slate-400 uppercase">Connection</div>
+                <div class="text-2xl font-black brand-500" id="stat-sync">Live</div>
+              </div>
+              <button id="logout-btn" onclick="logout()" class="ml-4 px-4 py-2 rounded-lg bg-white border border-slate-200">Logout</button>
+            </div>
+          </div>
+
+          <!-- Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-6 bg-white rounded-2xl border border-slate-100">
+              <h3 class="text-xl font-bold text-slate-700">Beginner</h3>
+              <p class="text-sm text-slate-400 mt-2 mb-4">Foundations</p>
+              <div id="card-beginner" class="text-slate-500 font-bold">Locked</div>
+              <button onclick="startLevel('beginner')" class="mt-4 w-full py-3 rounded-xl bg-teal-600 text-white font-bold">Start</button>
+            </div>
+
+            <div class="p-6 bg-white rounded-2xl border border-slate-100">
+              <h3 class="text-xl font-bold text-slate-700">Intermediate</h3>
+              <p class="text-sm text-slate-400 mt-2 mb-4">Layout & Tags</p>
+              <div id="card-intermediate" class="text-slate-500 font-bold">Locked</div>
+              <button onclick="startLevel('intermediate')" class="mt-4 w-full py-3 rounded-xl bg-white border border-slate-200 font-bold">Start</button>
+            </div>
+
+            <div class="p-6 bg-white rounded-2xl border border-slate-100">
+              <h3 class="text-xl font-bold text-slate-700">Advanced</h3>
+              <p class="text-sm text-slate-400 mt-2 mb-4">Semantic & Best Practices</p>
+              <div id="card-advanced" class="text-slate-500 font-bold">Locked</div>
+              <button onclick="startLevel('advanced')" class="mt-4 w-full py-3 rounded-xl bg-white border border-slate-200 font-bold">Start</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUIZ VIEW -->
+      <section id="quiz-view" class="hidden mt-6">
+        <div class="bg-white rounded-3xl p-8 shadow border border-slate-100">
+          <div class="mb-6">
+            <div id="q-counter" class="text-xs font-black uppercase text-teal-500"></div>
+            <h2 id="q-text" class="text-2xl font-bold leading-tight mb-4"></h2>
+            <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULT VIEW -->
+      <section id="result-view" class="hidden mt-6 text-center">
+        <div class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-8 border border-slate-100">
+          <div id="result-icon-container" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-green-100 text-green-600">
+            <i id="result-icon" class="fa-solid fa-check-circle text-3xl"></i>
+          </div>
+          <h2 id="result-title" class="text-2xl font-black mb-2"></h2>
+          <p id="result-message" class="text-slate-600 mb-4"></p>
+          <p id="result-score-text" class="text-slate-500 mb-4"></p>
+
+          <div class="space-y-3">
+            <button onclick="exitToMenu()" class="w-full py-3 bg-slate-900 text-white rounded-2xl font-bold">Return to Dashboard</button>
+            <button id="retry-btn" onclick="retryLevel()" class="w-full py-3 bg-white border-2 border-slate-200 rounded-2xl font-bold">Retry Attempt</button>
+          </div>
+        </div>
+      </section>
+
     </div>
+  </main>
 
-    <div id="app" class="max-w-4xl mx-auto p-4 md:p-8">
+  <!-- Inline scripts: Quiz logic, per-student storage, submit hook, and small teacher portal (polling) -->
+  <script>
+    // --- Config & State ---
+    const PASS_MARK = 16; // adjust to your question count
+    let studentName = localStorage.getItem('student_name') || "";
+    let progress = { beginner: false, intermediate: false, advanced: false };
+    let scores = { beginner: 0, intermediate: 0, advanced: 0 };
+    let currentLevelKey = null;
+    let currentIndex = 0;
+    let currentScore = 0;
 
-        <!-- VIEW 1: LOGIN SCREEN -->
-        <div id="login-view" class="flex flex-col items-center justify-center min-h-[80vh]">
-            <div class="bg-white p-10 rounded-3xl shadow-xl text-center max-w-md w-full border border-indigo-50">
-                <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6 text-indigo-600">
-                    <i class="fa-solid fa-user-graduate text-3xl"></i>
-                </div>
-                <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Student Login</h1>
-                <p class="text-slate-500 mb-8">Ready to test your HTML skills?</p>
-                
-                <input type="text" id="student-name-input" placeholder="Full Name (e.g. John Doe)" 
-                    class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold text-center">
-                
-                <button onclick="handleLogin()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all">
-                    Enter Portal
-                </button>
+    // Storage helpers (per-student)
+    function progressKey(name) { return `html_progress_${name}`; }
+    function scoresKey(name) { return `html_scores_${name}`; }
 
-                <div class="mt-12 pt-8 border-t border-slate-100">
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-4">Instructor Area</p>
-                    <div class="flex gap-2">
-                        <input type="password" id="reset-code-input" placeholder="Admin Code" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-indigo-500 text-center">
-                        <button onclick="attemptReset()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black whitespace-nowrap">Reset All</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    function loadStudentState() {
+      if (!studentName) return;
+      progress = JSON.parse(localStorage.getItem(progressKey(studentName))) || { beginner:false, intermediate:false, advanced:false };
+      scores = JSON.parse(localStorage.getItem(scoresKey(studentName))) || { beginner:0, intermediate:0, advanced:0 };
+      document.getElementById('display-name').innerText = studentName;
+      updateMenuUI();
+    }
 
-        <!-- VIEW 2: DASHBOARD -->
-        <div id="menu-view" class="hidden">
-            <header class="mb-10 flex justify-between items-center">
-                <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Week 1 Portal</h1>
-                    <p class="text-slate-500 mt-1 flex items-center">
-                        <i class="fa-solid fa-circle-user mr-2 text-indigo-500"></i>
-                        <span id="display-name" class="font-bold text-indigo-600"></span>
-                    </p>
-                </div>
-                <div class="flex flex-col items-end">
-                    <button onclick="logout()" class="text-xs text-slate-400 hover:text-red-500 font-bold mb-2">Logout</button>
-                    <div id="overall-badge" class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter hidden">Advanced Unlockable</div>
-                </div>
-            </header>
+    function saveStudentState() {
+      if (!studentName) return;
+      localStorage.setItem(progressKey(studentName), JSON.stringify(progress));
+      localStorage.setItem(scoresKey(studentName), JSON.stringify(scores));
+    }
 
-            <div class="grid md:grid-cols-3 gap-6" id="level-grid">
-                <div onclick="startQuiz('beginner')" id="card-beginner" class="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-sm hover:shadow-md cursor-pointer transition-all relative overflow-hidden group">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="p-3 rounded-2xl bg-emerald-50 text-emerald-600"><i class="fa-solid fa-seedling text-2xl"></i></div>
-                        <span id="badge-beginner" class="text-[10px] font-black px-2 py-1 rounded bg-green-100 text-green-700 hidden uppercase">Completed</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">Beginner</h3>
-                    <p class="text-sm text-slate-500 mt-2 mb-6">Terminology & Syntax Basics</p>
-                    <div class="flex items-center text-indigo-600 font-bold text-sm uppercase tracking-wider">Start <i class="fa-solid fa-chevron-right ml-2 text-xs"></i></div>
-                </div>
+    // --- Login / Create / Logout ---
+    async function handleLogin() {
+      const name = document.getElementById('student-name-input').value.trim();
+      if (name.length < 3) return alert("Please enter your full name.");
+      // If not found, prompt to create
+      if (!localStorage.getItem(progressKey(name)) && !localStorage.getItem(scoresKey(name))) {
+        if (!confirm("No account found. Create a new account?")) return;
+        // initialize
+        localStorage.setItem(progressKey(name), JSON.stringify({ beginner:false, intermediate:false, advanced:false }));
+        localStorage.setItem(scoresKey(name), JSON.stringify({ beginner:0, intermediate:0, advanced:0 }));
+      }
+      studentName = name;
+      localStorage.setItem('student_name', studentName);
+      loadStudentState();
+      checkAuth();
+    }
 
-                <div onclick="startQuiz('intermediate')" id="card-intermediate" class="bg-slate-100 rounded-3xl p-6 border-2 border-transparent opacity-60 cursor-not-allowed transition-all relative">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="p-3 rounded-2xl bg-slate-200 text-slate-400"><i class="fa-solid fa-gears text-2xl"></i></div>
-                        <i id="lock-intermediate" class="fa-solid fa-lock text-slate-400"></i>
-                        <span id="badge-intermediate" class="text-[10px] font-black px-2 py-1 rounded bg-green-100 text-green-700 hidden uppercase">Completed</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-500">Intermediate</h3>
-                    <p class="text-sm text-slate-400 mt-2 mb-6">Structural Logic & Flow</p>
-                    <div class="text-slate-400 font-bold text-sm uppercase tracking-wider">Locked</div>
-                </div>
+    function handleCreateAccount() {
+      const name = document.getElementById('student-name-input').value.trim();
+      if (name.length < 3) return alert("Please enter your full name.");
+      studentName = name;
+      if (!localStorage.getItem(progressKey(studentName))) {
+        localStorage.setItem(progressKey(studentName), JSON.stringify({ beginner:false, intermediate:false, advanced:false }));
+      }
+      if (!localStorage.getItem(scoresKey(studentName))) {
+        localStorage.setItem(scoresKey(studentName), JSON.stringify({ beginner:0, intermediate:0, advanced:0 }));
+      }
+      localStorage.setItem('student_name', studentName);
+      loadStudentState();
+      checkAuth();
+    }
 
-                <div onclick="startQuiz('advanced')" id="card-advanced" class="bg-slate-100 rounded-3xl p-6 border-2 border-transparent opacity-60 cursor-not-allowed transition-all relative">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="p-3 rounded-2xl bg-slate-200 text-slate-400"><i class="fa-solid fa-brain text-2xl"></i></div>
-                        <i id="lock-advanced" class="fa-solid fa-lock text-slate-400"></i>
-                        <span id="badge-advanced" class="text-[10px] font-black px-2 py-1 rounded bg-green-100 text-green-700 hidden uppercase">Completed</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-500">Advanced</h3>
-                    <p class="text-sm text-slate-400 mt-2 mb-6">Semantic Philosophy</p>
-                    <div class="text-slate-400 font-bold text-sm uppercase tracking-wider">Locked</div>
-                </div>
-            </div>
+    function logout() {
+      // Only remove session; keep per-student stored data
+      localStorage.removeItem('student_name');
+      studentName = "";
+      // reset in-memory
+      progress = { beginner:false, intermediate:false, advanced:false };
+      scores = { beginner:0, intermediate:0, advanced:0 };
+      location.reload();
+    }
 
-            <div class="mt-10 p-6 bg-white rounded-3xl border border-slate-100">
-                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Live Performance Stats</h4>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="p-4 bg-slate-50 rounded-2xl">
-                        <span class="block text-2xl font-black text-slate-800" id="stat-rank">--</span>
-                        <span class="text-[10px] text-slate-500 uppercase font-bold">Current Rank</span>
-                    </div>
-                    <div class="p-4 bg-slate-50 rounded-2xl">
-                        <span class="block text-2xl font-black text-slate-800" id="stat-score">0</span>
-                        <span class="text-[10px] text-slate-500 uppercase font-bold">Total Points</span>
-                    </div>
-                    <div class="p-4 bg-slate-50 rounded-2xl">
-                        <span class="block text-2xl font-black text-slate-800" id="stat-completed">0/3</span>
-                        <span class="text-[10px] text-slate-500 uppercase font-bold">Modules Done</span>
-                    </div>
-                    <div class="p-4 bg-slate-50 rounded-2xl">
-                        <span class="block text-2xl font-black text-indigo-600" id="stat-sync">Live</span>
-                        <span class="text-[10px] text-slate-500 uppercase font-bold">Connection</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    // --- Menu UI and Level control ---
+    function updateMenuUI() {
+      document.getElementById('stat-score').innerText = Object.values(scores).reduce((a,b)=>a+b,0);
+      document.getElementById('stat-completed').innerText = `${Object.values(progress).filter(v=>v).length}/3`;
+      // Cards
+      document.getElementById('card-beginner').innerText = progress.beginner ? 'Completed' : 'Unlocked';
+      document.getElementById('card-intermediate').innerText = progress.intermediate ? 'Completed' : 'Locked';
+      document.getElementById('card-advanced').innerText = progress.advanced ? 'Completed' : 'Locked';
+    }
 
-        <!-- QUIZ VIEW -->
-        <div id="quiz-view" class="hidden">
-            <div class="max-w-2xl mx-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <button onclick="exitToMenu()" class="text-slate-500 hover:text-indigo-600 font-bold transition-colors text-xs flex items-center">
-                        <i class="fa-solid fa-chevron-left mr-2"></i> ABANDON ATTEMPT
-                    </button>
-                    <div id="level-indicator" class="px-4 py-1 bg-indigo-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-100"></div>
-                </div>
-                <div class="w-full bg-slate-200 h-2 rounded-full mb-8 overflow-hidden">
-                    <div id="progress-bar" class="progress-transition bg-indigo-500 h-full w-0"></div>
-                </div>
-                <div id="question-card" class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 md:p-12 animate-slide">
-                    <span id="q-counter" class="text-indigo-500 text-xs font-black uppercase tracking-widest block mb-4"></span>
-                    <h2 id="q-text" class="text-2xl font-bold text-slate-800 leading-tight mb-10"></h2>
-                    <div id="options-grid" class="grid grid-cols-1 gap-4"></div>
-                </div>
-            </div>
-        </div>
+    function checkAuth() {
+      // If signed in, show menu; otherwise show login
+      if (studentName) {
+        document.getElementById('login-view').classList.add('hidden');
+        document.getElementById('menu-view').classList.remove('hidden');
+      } else {
+        document.getElementById('login-view').classList.remove('hidden');
+        document.getElementById('menu-view').classList.add('hidden');
+      }
+    }
 
-        <!-- RESULT VIEW -->
-        <div id="result-view" class="hidden text-center py-10">
-            <div class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-10 border border-slate-100">
-                <div id="result-icon-container" class="w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6">
-                    <i id="result-icon" class="text-4xl"></i>
-                </div>
-                <h2 id="result-title" class="text-3xl font-black mb-2 tracking-tight"></h2>
-                <p id="result-score-text" class="text-slate-500 mb-8 text-lg font-medium"></p>
-                <div id="result-message" class="p-5 rounded-2xl mb-8 text-sm font-bold leading-relaxed"></div>
-                <div class="space-y-3">
-                    <button onclick="exitToMenu()" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200">Return to Dashboard</button>
-                    <button id="retry-btn" onclick="retryLevel()" class="w-full py-4 bg-white border-2 border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all">Retry Attempt</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    function startLevel(level) {
+      // enforce lock: intermediate locked until beginner completed, etc.
+      if (level === 'intermediate' && !progress.beginner) return alert('Complete Beginner first.');
+      if (level === 'advanced' && !progress.intermediate) return alert('Complete Intermediate first.');
+      currentLevelKey = level;
+      currentIndex = 0;
+      currentScore = 0;
+      renderQuestion();
+      document.getElementById('menu-view').classList.add('hidden');
+      document.getElementById('quiz-view').classList.remove('hidden');
+    }
 
-    <script>
-        const PASS_MARK = 16;
-        let studentName = localStorage.getItem('student_name') || "";
-        let progress = JSON.parse(localStorage.getItem('html_progress_v2')) || { beginner: false, intermediate: false, advanced: false };
-        let scores = JSON.parse(localStorage.getItem('html_scores')) || { beginner: 0, intermediate: 0, advanced: 0 };
-        let currentLevelKey = null;
-        let currentIndex = 0;
-        let currentScore = 0;
+    function exitToMenu() {
+      document.getElementById('quiz-view').classList.add('hidden');
+      document.getElementById('result-view').classList.add('hidden');
+      document.getElementById('menu-view').classList.remove('hidden');
+      updateMenuUI();
+    }
 
-        // UPDATED QUESTIONS (FULL 60 SET)
-        const QUESTIONS_DATA = {
-            beginner: [
-                { q: "What does HTML stand for?", o: ["Hyper Text Markup Language", "High Text Machine Language", "Hyper Tool Markup Language", "Home Text Markup Language"], a: 0 },
-                { q: "HTML is mainly used to:", o: ["Style web pages", "Structure content", "Add logic", "Store data"], a: 1 },
-                { q: "Which file extension is correct for HTML?", o: [".doc", ".txt", ".html", ".exe"], a: 2 },
-                { q: "Which file is usually the homepage?", o: ["home.html", "index.html", "start.html", "main.html"], a: 1 },
-                { q: "HTML content is written using:", o: ["Plain text", "Binary", "Encrypted code", "Machine language"], a: 0 },
-                { q: "What reads HTML and displays it?", o: ["Server", "Compiler", "Browser", "Editor"], a: 2 },
-                { q: "HTML tags are written using:", o: ["{}", "()", "<>", "[]"], a: 2 },
-                { q: "Which part of HTML shows content to users?", o: ["Head", "Meta", "Body", "Title"], a: 2 },
-                { q: "HTML is a:", o: ["Programming language", "Markup language", "Database language", "Styling language"], a: 1 },
-                { q: "HTML works on:", o: ["Only laptops", "Only phones", "Only tablets", "All devices with browsers"], a: 3 },
-                { q: "Which part of HTML contains page information?", o: ["Body", "Head", "Footer", "Section"], a: 1 },
-                { q: "HTML instructions are called:", o: ["Functions", "Tags", "Commands", "Scripts"], a: 1 },
-                { q: "What does a closing tag do?", o: ["Starts content", "Ends content", "Styles content", "Deletes content"], a: 1 },
-                { q: "HTML files are usually saved inside a:", o: ["Database", "Browser", "Project folder", "Server memory"], a: 2 },
-                { q: "HTML tells the browser:", o: ["How to think", "What content is", "How to calculate", "How to connect to internet"], a: 1 },
-                { q: "HTML is used to create:", o: ["Mobile apps", "Websites", "Operating systems", "Games only"], a: 1 },
-                { q: "Which is NOT a browser?", o: ["Chrome", "Firefox", "VS Code", "Edge"], a: 2 },
-                { q: "HTML code is read:", o: ["Randomly", "Bottom-up", "Top-down", "Right-to-left"], a: 2 },
-                { q: "HTML files can be opened by:", o: ["Browsers", "Compilers", "Servers only", "Databases"], a: 0 },
-                { q: "HTML focuses mainly on:", o: ["Logic", "Design", "Structure", "Security"], a: 2 }
-            ],
-            intermediate: [
-                { q: "Why is HTML called a markup language?", o: ["It adds logic", "It marks content with meaning", "It runs programs", "It stores data"], a: 1 },
-                { q: "Why do most tags come in pairs?", o: ["To start and end content", "To speed up loading", "To add styling", "To connect to servers"], a: 0 },
-                { q: "What happens if a closing tag is missing?", o: ["Browser crashes", "Browser guesses structure", "Website deletes itself", "HTML stops working"], a: 1 },
-                { q: "Why is file organization important?", o: ["It improves understanding", "It adds security", "It adds speed automatically", "It adds styling"], a: 0 },
-                { q: "What does the browser do first with HTML?", o: ["Executes logic", "Reads instructions", "Adds styling", "Encrypts it"], a: 1 },
-                { q: "Why must HTML files be saved correctly?", o: ["For browsers to recognize them", "For security", "For internet access", "For databases"], a: 0 },
-                { q: "HTML without CSS will still:", o: ["Work", "Fail", "Not display", "Crash browsers"], a: 0 },
-                { q: "Why does HTML work on all devices?", o: ["It uses internet", "Browsers understand it", "It uses JavaScript", "It is compiled"], a: 1 },
-                { q: "HTML describes content as:", o: ["Instructions", "Algorithms", "Data tables", "Logic trees"], a: 0 },
-                { q: "Why is index.html commonly used?", o: ["It is faster", "It is recognized automatically", "It adds styling", "It stores data"], a: 1 },
-                { q: "What happens if you name an HTML file wrongly?", o: ["Browser may not display it correctly", "Internet disconnects", "File deletes itself", "Server crashes"], a: 0 },
-                { q: "HTML is best learned by:", o: ["Memorizing", "Understanding structure", "Copy-pasting", "Guessing"], a: 1 },
-                { q: "Why does HTML read top to bottom?", o: ["Because of logic flow", "Because browsers process sequentially", "Because of styling", "Because of security"], a: 1 },
-                { q: "Which best explains a website?", o: ["A text file with instructions", "A compiled program", "A database", "An app"], a: 0 },
-                { q: "Why is HTML easy for beginners?", o: ["It hides errors", "It is descriptive", "It runs fast", "It uses logic"], a: 1 },
-                { q: "HTML tags give content:", o: ["Meaning", "Color", "Logic", "Security"], a: 0 },
-                { q: "What happens when HTML has errors?", o: ["Browser stops", "Browser tries to fix", "Website deletes", "Server crashes"], a: 1 },
-                { q: "HTML structure helps:", o: ["Browsers understand content", "Add animation", "Secure data", "Improve logic"], a: 0 },
-                { q: "HTML code is usually written in:", o: ["Code editors", "Browsers only", "Databases", "Compilers"], a: 0 },
-                { q: "HTML files are part of a:", o: ["Website project", "Browser system", "Database", "Server OS"], a: 0 }
-            ],
-            advanced: [
-                { q: "Why is HTML considered forgiving?", o: ["It hides all errors", "Browsers try to interpret errors", "It has no rules", "It auto-corrects everything"], a: 1 },
-                { q: "What is the main advantage of HTML being plain text?", o: ["Easy to edit anywhere", "Faster internet", "Better security", "Automatic styling"], a: 0 },
-                { q: "Why does HTML not need compilation?", o: ["Browsers interpret it directly", "It is encrypted", "It is logic-based", "It runs on servers"], a: 0 },
-                { q: "HTML focuses on meaning because:", o: ["Design is separate", "Logic is included", "It controls servers", "It stores data"], a: 0 },
-                { q: "Why does HTML come before CSS and JS?", o: ["It structures content first", "It is faster", "It is easier", "It controls logic"], a: 0 },
-                { q: "HTML structure affects:", o: ["Accessibility and SEO", "Only appearance", "Only speed", "Only logic"], a: 0 },
-                { q: "Why is understanding HTML structure important?", o: ["It prevents confusion later", "It adds styling", "It adds security", "It increases internet speed"], a: 0 },
-                { q: "HTML teaches beginners:", o: ["Logical thinking about content", "Advanced programming", "Security engineering", "Database management"], a: 0 },
-                { q: "Why should beginners avoid memorizing tags?", o: ["Understanding structure matters more", "Tags are useless", "Browsers change", "HTML has no rules"], a: 0 },
-                { q: "HTML allows learning web development because:", o: ["It shows immediate results", "It hides output", "It runs in background", "It needs servers"], a: 0 },
-                { q: "Why is HTML a good first language?", o: ["It introduces structure without logic", "It teaches databases", "It requires math", "It uses compilation"], a: 0 },
-                { q: "HTML teaches the relationship between:", o: ["Content and meaning", "Logic and databases", "Servers and networks", "Security and encryption"], a: 0 },
-                { q: "HTML prepares learners for CSS because:", o: ["Structure comes before design", "CSS replaces HTML", "CSS adds logic", "CSS controls servers"], a: 0 },
-                { q: "HTML errors are learning opportunities because:", o: ["Browsers explain structure issues", "They break everything", "They stop learning", "They delete files"], a: 0 },
-                { q: "HTML content hierarchy helps:", o: ["Humans and machines understand content", "Only browsers", "Only designers", "Only servers"], a: 0 },
-                { q: "HTML works offline because:", o: ["It does not depend on servers", "It needs internet", "It uses databases", "It compiles online"], a: 0 },
-                { q: "HTML teaches discipline by:", o: ["Encouraging proper structure", "Adding styling", "Hiding mistakes", "Removing rules"], a: 0 },
-                { q: "HTML file naming matters because:", o: ["Browsers rely on conventions", "It affects logic", "It affects security", "It affects databases"], a: 0 },
-                { q: "HTML helps beginners understand that websites are:", o: ["Structured documents", "Magic systems", "Programs only", "Databases"], a: 0 },
-                { q: "Mastering HTML fundamentals makes later learning:", o: ["Easier and clearer", "Slower", "Confusing", "Unnecessary"], a: 0 }
-            ]
-        };
+    function retryLevel() {
+      currentIndex = 0;
+      currentScore = 0;
+      renderQuestion();
+      document.getElementById('result-view').classList.add('hidden');
+      document.getElementById('quiz-view').classList.remove('hidden');
+    }
 
-        function handleLogin() {
-            const name = document.getElementById('student-name-input').value.trim();
-            if (name.length < 3) return alert("Please enter your full name.");
-            studentName = name;
-            localStorage.setItem('student_name', name);
-            checkAuth();
+    // --- Sample Questions (trimmed) ---
+    const QUESTIONS_DATA = {
+      beginner: [
+        { q: "What does HTML stand for?", o: ["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Markup Language","Home Text Markup Language"], a: 0 },
+        { q: "Which file extension is correct for HTML?", o: [".doc",".txt",".html",".exe"], a: 2 },
+        { q: "What reads HTML and displays it?", o: ["Server","Compiler","Browser","Editor"], a: 2 }
+      ],
+      intermediate: [
+        { q: "Which tag contains the page title?", o: ["<meta>","<title>","<head>","<body>"], a: 1 },
+        { q: "Which element is for navigation?", o: ["<nav>","<main>","<section>","<article>"], a: 0 }
+      ],
+      advanced: [
+        { q: "Which tag improves semantics for articles?", o: ["<div>","<span>","<article>","<figure>"], a: 2 }
+      ]
+    };
+
+    // --- Rendering & Answer handling ---
+    function renderQuestion() {
+      const qData = QUESTIONS_DATA[currentLevelKey][currentIndex];
+      document.getElementById('q-counter').innerText = `Challenge ${currentIndex+1} of ${QUESTIONS_DATA[currentLevelKey].length}`;
+      document.getElementById('q-text').innerText = qData.q;
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = '';
+      qData.o.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "option-hover w-full text-left p-4 rounded-xl border border-slate-100 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center";
+        btn.onclick = () => handleAnswer(idx);
+        btn.innerHTML = `<div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center font-black mr-4">${String.fromCharCode(65+idx)}</div><div class="text-slate-700 font-bold">${opt}</div>`;
+        grid.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(idx) {
+      if (idx === QUESTIONS_DATA[currentLevelKey][currentIndex].a) currentScore++;
+      if (currentIndex < QUESTIONS_DATA[currentLevelKey].length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        finishLevel();
+      }
+    }
+
+    // --- Sync helpers ---
+    function showSyncStatus(ok) {
+      const el = document.getElementById('stat-sync');
+      el.innerText = ok ? 'Live' : 'Offline';
+      el.className = ok ? 'brand-500' : '';
+    }
+
+    // --- finishLevel: update local storage per student and send to Netlify function ---
+    async function finishLevel() {
+      const total = QUESTIONS_DATA[currentLevelKey].length;
+      const passed = currentScore >= PASS_MARK || currentScore === total; // for demo
+      document.getElementById('quiz-view').classList.add('hidden');
+      document.getElementById('result-view').classList.remove('hidden');
+      document.getElementById('result-score-text').innerText = `Final Score: ${currentScore} / ${total}`;
+
+      if (passed) {
+        progress[currentLevelKey] = true;
+        scores[currentLevelKey] = currentScore;
+
+        // Save per-student or fallback
+        if (studentName) {
+          localStorage.setItem(progressKey(studentName), JSON.stringify(progress));
+          localStorage.setItem(scoresKey(studentName), JSON.stringify(scores));
+        } else {
+          localStorage.setItem('html_progress_v2', JSON.stringify(progress));
+          localStorage.setItem('html_scores', JSON.stringify(scores));
         }
 
-        function logout() {
-            localStorage.removeItem('student_name');
-            localStorage.removeItem('html_progress_v2');
-            localStorage.removeItem('html_scores');
-            location.reload();
+        document.getElementById('result-title').innerText = "Level Unlocked!";
+        document.getElementById('result-message').innerText = "Excellent! Data has been synced to your permanent record.";
+        document.getElementById('retry-btn').classList.add('hidden');
+
+        showSyncStatus(true);
+        try {
+          await fetch('/.netlify/functions/submit-score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              studentName,
+              level: currentLevelKey,
+              score: currentScore,
+              total,
+              timestamp: new Date().toISOString()
+            })
+          });
+        } catch (e) {
+          console.warn('Submit failed', e);
+          showSyncStatus(false);
         }
+      } else {
+        document.getElementById('result-title').innerText = "Try Again";
+        document.getElementById('result-message').innerText = "You didn't meet the pass threshold. Give it another try!";
+      }
+      updateMenuUI();
+    }
 
-        function checkAuth() {
-            if (studentName) {
-                document.getElementById('login-view').classList.add('hidden');
-                document.getElementById('menu-view').classList.remove('hidden');
-                document.getElementById('display-name').innerText = studentName;
-                updateMenuUI();
-            }
+    // --- Init on load ---
+    (function init() {
+      checkAuth();
+      if (studentName) loadStudentState();
+      updateMenuUI();
+    })();
+
+    // --- Small teacher portal (polling) - injected UI, protected by validate-reset action ---
+    (function teacherPortal() {
+      const POLL_INTERVAL = 3000;
+      // Create teacher login button
+      const teacherBtn = document.createElement('button');
+      teacherBtn.className = 'teacher-login-btn fixed bottom-6 right-6 z-50 p-3 text-white rounded-lg shadow-lg';
+      teacherBtn.textContent = 'Teacher Login';
+      teacherBtn.onclick = openTeacherPortal;
+      document.body.appendChild(teacherBtn);
+
+      // Portal container
+      const portal = document.createElement('div');
+      portal.id = 'teacher-portal';
+      portal.style = 'display:none;position:fixed;right:18px;bottom:90px;width:360px;max-height:60vh;overflow:auto;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.12);padding:12px;z-index:9999';
+      portal.innerHTML = '<h3 class="font-bold mb-2">Live Submissions</h3><ul id="live-feed" class="text-sm" style="list-style:none;padding:0;margin:0"></ul><div class="text-right mt-3"><button id="close-portal" class="px-3 py-1 rounded bg-slate-100">Close</button></div>';
+      document.body.appendChild(portal);
+      document.getElementById('close-portal').onclick = closePortal;
+
+      let pollId = null;
+      let lastTs = 0;
+
+      async function openTeacherPortal() {
+        const code = prompt('Enter teacher code:');
+        if (!code) return;
+        try {
+          const res = await fetch('/.netlify/functions/submit-score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'validate-reset', code })
+          });
+          const data = await res.json();
+          if (!data.success) {
+            alert('Invalid code');
+            return;
+          }
+          portal.style.display = 'block';
+          fetchLatest();
+          pollId = setInterval(fetchLatest, POLL_INTERVAL);
+        } catch (err) {
+          console.error(err);
+          alert('Auth check failed.');
         }
+      }
 
-        async function attemptReset() {
-            const code = document.getElementById('reset-code-input').value;
-            if(!code) return;
-            const res = await fetch('/.netlify/functions/submit-score', {
-                method: 'POST',
-                body: JSON.stringify({ action: 'validate-reset', code })
-            });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.clear();
-                alert("System Reset Complete.");
-                location.reload();
-            } else { alert("Invalid Admin Key"); }
+      function closePortal() {
+        portal.style.display = 'none';
+        if (pollId) clearInterval(pollId);
+        pollId = null;
+      }
+
+      async function fetchLatest() {
+        try {
+          const r = await fetch('/.netlify/functions/get-scores');
+          if (!r.ok) throw new Error('Fetch failed');
+          const items = await r.json();
+          if (!Array.isArray(items)) return;
+          // Filter new items by timestamp
+          const newItems = items.filter(i => {
+            const t = i.timestamp ? new Date(i.timestamp).getTime() : 0;
+            return t > lastTs;
+          });
+          if (items.length) {
+            const tsList = items.map(i => i.timestamp ? new Date(i.timestamp).getTime() : 0);
+            lastTs = Math.max(lastTs, ...tsList);
+          }
+          if (newItems.length) appendToFeed(newItems);
+        } catch (err) {
+          console.error('Polling error', err);
         }
+      }
 
-        function updateMenuUI() {
-            updateCard('beginner');
-            updateCard('intermediate');
-            updateCard('advanced');
-            const totalPoints = Object.values(scores).reduce((a, b) => a + b, 0);
-            const completedCount = Object.values(progress).filter(v => v === true).length;
-            document.getElementById('stat-score').innerText = totalPoints;
-            document.getElementById('stat-completed').innerText = `${completedCount}/3`;
-            const rank = totalPoints > 50 ? 'Master' : (totalPoints > 30 ? 'Pro' : (totalPoints > 10 ? 'Novice' : 'Starter'));
-            document.getElementById('stat-rank').innerText = rank;
-            if (progress.advanced) {
-                const badge = document.getElementById('overall-badge');
-                badge.innerText = "Certified Developer";
-                badge.classList.remove('hidden');
-            }
-        }
+      function appendToFeed(items) {
+        const list = document.getElementById('live-feed');
+        items.forEach(it => {
+          const li = document.createElement('li');
+          li.className = 'p-2 border-b border-slate-100';
+          const name = it.studentName || it.Name || 'Unknown';
+          const level = it.level || it.Level || '';
+          const score = it.score || it.Score || '';
+          const ts = it.timestamp || new Date().toISOString();
+          li.innerHTML = `<div class="font-semibold">${escapeHtml(name)} — ${escapeHtml(level)} <span class="text-slate-400 font-normal">(${escapeHtml(score)})</span></div>
+                          <div class="text-slate-400 text-xs">${new Date(ts).toLocaleString()}</div>`;
+          list.insertBefore(li, list.firstChild);
+        });
+        while (list.children.length > 200) list.removeChild(list.lastChild);
+      }
 
-        function updateCard(level) {
-            const card = document.getElementById(`card-${level}`);
-            const lock = document.getElementById(`lock-${level}`);
-            const badge = document.getElementById(`badge-${level}`);
-            let isUnlocked = (level === 'beginner') || (level === 'intermediate' && progress.beginner) || (level === 'advanced' && progress.intermediate);
-            if (isUnlocked) {
-                card.classList.remove('bg-slate-100', 'opacity-60', 'cursor-not-allowed');
-                card.classList.add('bg-white', 'border-indigo-100', 'cursor-pointer');
-                if(lock) lock.classList.add('hidden');
-            }
-            if (progress[level]) {
-                badge.classList.remove('hidden');
-                const startBtn = card.querySelector('div:last-child');
-                if(startBtn) startBtn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i> Review Results`;
-            }
-        }
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
+      }
 
-        function startQuiz(level) {
-            if (level === 'intermediate' && !progress.beginner) return;
-            if (level === 'advanced' && !progress.intermediate) return;
-            currentLevelKey = level;
-            currentIndex = 0;
-            currentScore = 0;
-            document.getElementById('menu-view').classList.add('hidden');
-            document.getElementById('quiz-view').classList.remove('hidden');
-            document.getElementById('level-indicator').innerText = level;
-            renderQuestion();
-        }
+      // Expose for debugging
+      window.__teacherPortal = { open: openTeacherPortal, close: closePortal, fetchLatest };
+    })();
+  </script>
 
-        function renderQuestion() {
-            const qData = QUESTIONS_DATA[currentLevelKey][currentIndex];
-            const total = QUESTIONS_DATA[currentLevelKey].length;
-            const pct = (currentIndex / total) * 100;
-            document.getElementById('q-counter').innerText = `Challenge ${currentIndex + 1} of ${total}`;
-            document.getElementById('q-text').innerText = qData.q;
-            document.getElementById('progress-bar').style.width = `${pct}%`;
-            const grid = document.getElementById('options-grid');
-            grid.innerHTML = '';
-            qData.o.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "option-hover w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-indigo-500 hover:bg-indigo-50 transition-all flex items-center group relative overflow-hidden";
-                btn.onclick = () => handleAnswer(idx);
-                btn.innerHTML = `<div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 font-black mr-5 group-hover:bg-indigo-600 group-hover:text-white transition-colors">${String.fromCharCode(65 + idx)}</div><span class="text-slate-700 font-bold text-lg">${opt}</span>`;
-                grid.appendChild(btn);
-            });
-        }
-
-        function handleAnswer(idx) {
-            if (idx === QUESTIONS_DATA[currentLevelKey][currentIndex].a) currentScore++;
-            if (currentIndex < QUESTIONS_DATA[currentLevelKey].length - 1) {
-                currentIndex++;
-                renderQuestion();
-            } else { finishLevel(); }
-        }
-
-        async function finishLevel() {
-            const total = QUESTIONS_DATA[currentLevelKey].length;
-            const passed = currentScore >= PASS_MARK;
-            document.getElementById('quiz-view').classList.add('hidden');
-            document.getElementById('result-view').classList.remove('hidden');
-            const iconCont = document.getElementById('result-icon-container');
-            const icon = document.getElementById('result-icon');
-            const title = document.getElementById('result-title');
-            const msg = document.getElementById('result-message');
-            document.getElementById('result-score-text').innerText = `Final Score: ${currentScore} / ${total}`;
-
-            if (passed) {
-                progress[currentLevelKey] = true;
-                scores[currentLevelKey] = currentScore;
-                localStorage.setItem('html_progress_v2', JSON.stringify(progress));
-                localStorage.setItem('html_scores', JSON.stringify(scores));
-                iconCont.className = "w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 bg-green-100 text-green-600";
-                icon.className = "fa-solid fa-check-circle";
-                title.innerText = "Level Unlocked!";
-                msg.innerText = "Excellent! Data has been synced to your permanent record.";
-                document.getElementById('retry-btn').classList.add('hidden');
-                
-                showSyncStatus(true);
-                try {
-                    await fetch('/.netlify/functions/submit-score', {
-                        method: 'POST',
-                        body: JSON.stringify({ studentName, level: currentLevelKey, score: currentScore, total })
-                    });
-                } catch(e) {}
-                setTimeout(() => showSyncStatus(false), 2000);
-            } else {
-                iconCont.className = "w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 bg-rose-100 text-rose-600";
-                icon.className = "fa-solid fa-triangle-exclamation";
-                title.innerText = "Study Required";
-                msg.innerText = `To progress, you need at least ${PASS_MARK} points.`;
-                document.getElementById('retry-btn').classList.remove('hidden');
-            }
-        }
-
-        function showSyncStatus(show) {
-            document.getElementById('sync-status').classList.toggle('hidden', !show);
-        }
-
-        function exitToMenu() {
-            document.getElementById('quiz-view').classList.add('hidden');
-            document.getElementById('result-view').classList.add('hidden');
-            document.getElementById('menu-view').classList.remove('hidden');
-            updateMenuUI();
-        }
-
-        function retryLevel() {
-            document.getElementById('result-view').classList.add('hidden');
-            startQuiz(currentLevelKey);
-        }
-
-        window.onload = checkAuth;
-    </script>
 </body>
 </html>
