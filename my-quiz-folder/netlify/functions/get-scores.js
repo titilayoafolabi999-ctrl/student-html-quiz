@@ -1,9 +1,36 @@
 // Netlify Function: get-scores.js
 // Returns recent submissions from the Google Apps Script Web App (GOOGLE_SCRIPT_URL).
-// Small in-memory cache to limit Apps Script requests.
+// Adds a short in-memory cache and returns normalized objects.
 
 const CACHE_TTL = 3000; // milliseconds
 let cache = { ts: 0, data: null };
+
+function normalizeRow(row) {
+  // row may be an object with header names or already normalized
+  if (!row || typeof row !== 'object') return null;
+
+  // create a flexible lookup for common header names
+  const lookup = {};
+  Object.keys(row).forEach(k => {
+    lookup[k.toLowerCase().replace(/\s+/g, '')] = row[k];
+  });
+
+  const timestamp = lookup.timestamp || lookup.time || lookup.date || lookup['timestamp'] || null;
+  const studentName = lookup.studentname || lookup['studentname'] || lookup.name || lookup['studentname'] || lookup['student'] || '';
+  const level = lookup.level || '';
+  const score = (lookup.score !== undefined && lookup.score !== null) ? Number(lookup.score) : (lookup.points ? Number(lookup.points) : 0);
+  const total = (lookup.total !== undefined && lookup.total !== null) ? Number(lookup.total) : (lookup.maximum ? Number(lookup.maximum) : 0);
+  const percentage = (lookup.percentage !== undefined && lookup.percentage !== null) ? lookup.percentage : (total ? (Number(score) / Number(total)) : null);
+
+  return {
+    timestamp: timestamp ? String(timestamp) : new Date().toISOString(),
+    studentName: String(studentName || '').trim(),
+    level: String(level || '').trim(),
+    score: isNaN(score) ? 0 : score,
+    total: isNaN(total) ? 0 : total,
+    percentage: percentage
+  };
+}
 
 exports.handler = async function (event) {
   if (event.httpMethod !== 'GET') {
@@ -18,21 +45,26 @@ exports.handler = async function (event) {
 
     const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
     if (!GOOGLE_SCRIPT_URL) {
-      return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Missing GOOGLE_SCRIPT_URL' }) };
+      return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Missing GOOGLE_SCRIPT_URL environment variable' }) };
     }
 
-    // Request latest rows. The Apps Script should accept action=getLatest and optional limit.
     const url = `${GOOGLE_SCRIPT_URL}?action=getLatest&limit=200`;
     const res = await fetch(url);
     if (!res.ok) {
-      const txt = await res.text().catch(()=> '');
+      const txt = await res.text().catch(() => '');
       throw new Error(`Apps Script returned ${res.status} ${txt}`);
     }
-    const json = await res.json();
 
-    cache = { ts: Date.now(), data: json };
+    const rows = await res.json();
+    if (!Array.isArray(rows)) {
+      throw new Error('Unexpected response from Apps Script: expected JSON array');
+    }
 
-    return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(json) };
+    const normalized = rows.map(normalizeRow).filter(Boolean);
+
+    cache = { ts: Date.now(), data: normalized };
+
+    return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(normalized) };
   } catch (err) {
     console.error('get-scores error:', err);
     return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: err.message }) };
