@@ -1,68 +1,74 @@
 /**
- * Real-time Assessment Backend
- * Handles: 
- * 1. Score submission to Google Sheets
- * 2. Admin reset validation
+ * submit-score.js (updated)
+ * - Handles validate-reset (teacher code) and score submissions
+ * - Ensures a timestamp is present
+ * - Forwards to GOOGLE_SCRIPT_URL (Apps Script)
+ * - Returns Apps Script JSON response to the client
  */
 
-exports.handler = async (event) => {
-  // CORS & Method Check
+exports.handler = async function (event) {
+  // Only POST is allowed
   if (event.httpMethod !== 'POST') {
-    return { 
-      statusCode: 405, 
-      body: JSON.stringify({ error: 'Method Not Allowed' }) 
-    };
+    return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
   try {
-    const body = JSON.parse(event.body);
+    const body = event.body ? JSON.parse(event.body) : {};
 
-    // --- ACTION 1: ADMIN RESET VALIDATION ---
+    // Action: validate-reset (teacher code check)
     if (body.action === 'validate-reset') {
       const isCorrect = body.code === process.env.RESET_CODE;
-      return { 
-        statusCode: isCorrect ? 200 : 401, 
-        body: JSON.stringify({ success: isCorrect }) 
+      return {
+        statusCode: isCorrect ? 200 : 401,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ success: isCorrect })
       };
     }
 
-    // --- ACTION 2: REAL-TIME SCORE SUBMISSION ---
-    // This sends data to your Google Apps Script Web App
+    // Default: submit score
     const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
-    
     if (!GOOGLE_SCRIPT_URL) {
-      console.error("Missing GOOGLE_SCRIPT_URL environment variable");
-      return { statusCode: 500, body: "Server Configuration Error" };
+      console.error('Missing GOOGLE_SCRIPT_URL environment variable');
+      return { statusCode: 500, body: JSON.stringify({ error: 'Server Configuration Error' }) };
     }
 
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
+    // Ensure timestamp present
+    const payload = Object.assign({}, body);
+    if (!payload.timestamp) payload.timestamp = new Date().toISOString();
+
+    // Post to Apps Script
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        timestamp: new Date().toISOString(),
-        studentName: body.studentName,
-        level: body.level,
-        score: body.score,
-        total: body.total,
-        percentage: ((body.score / body.total) * 100).toFixed(2) + '%'
-      })
+      body: JSON.stringify(payload)
     });
 
-    if (!response.ok) throw new Error('Google Sheets Sync Failed');
+    const text = await res.text().catch(() => '');
+    let json = null;
+    try { json = text ? JSON.parse(text) : null; } catch (e) { json = { raw: text }; }
 
-    return { 
-      statusCode: 200, 
-      body: JSON.stringify({ 
-        status: "Success", 
-        message: "Real-time sync complete" 
-      }) 
+    if (!res.ok) {
+      console.error('Apps Script responded with error:', res.status, text);
+      return {
+        statusCode: 502,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Apps Script Sync Failed', details: json || text })
+      };
+    }
+
+    // Success - forward Apps Script result to client
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'ok', result: json })
     };
 
   } catch (error) {
-    console.error("Backend Error:", error);
-    return { 
-      statusCode: 500, 
-      body: JSON.stringify({ error: error.message }) 
+    console.error('Backend Error:', error);
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: error.message })
     };
   }
 };
