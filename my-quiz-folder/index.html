@@ -8,7 +8,7 @@
   <!-- Tailwind CDN (for quick prototyping) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Simple color theme: teal (was indigo) -->
+  <!-- Simple color theme: teal -->
   <style>
     :root {
       --brand: #0f766e; /* teal-700 */
@@ -131,7 +131,7 @@
   <!-- Inline scripts: Quiz logic, per-student storage, submit hook, and small teacher portal (polling) -->
   <script>
     // --- Config & State ---
-    const PASS_MARK = 16; // adjust to your question count
+    const PASS_MARK = 16; // 80% of 20
     let studentName = localStorage.getItem('student_name') || "";
     let progress = { beginner: false, intermediate: false, advanced: false };
     let scores = { beginner: 0, intermediate: 0, advanced: 0 };
@@ -247,19 +247,73 @@
       document.getElementById('quiz-view').classList.remove('hidden');
     }
 
-    // --- Sample Questions (trimmed) ---
+    // --- Full QUESTIONS_DATA (60 questions) ---
     const QUESTIONS_DATA = {
       beginner: [
         { q: "What does HTML stand for?", o: ["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Markup Language","Home Text Markup Language"], a: 0 },
+        { q: "HTML is mainly used to:", o: ["Style web pages","Structure content","Add logic","Store data"], a: 1 },
         { q: "Which file extension is correct for HTML?", o: [".doc",".txt",".html",".exe"], a: 2 },
-        { q: "What reads HTML and displays it?", o: ["Server","Compiler","Browser","Editor"], a: 2 }
+        { q: "Which file is usually the homepage?", o: ["home.html","index.html","start.html","main.html"], a: 1 },
+        { q: "HTML content is written using:", o: ["Plain text","Binary","Encrypted code","Machine language"], a: 0 },
+        { q: "What reads HTML and displays it?", o: ["Server","Compiler","Browser","Editor"], a: 2 },
+        { q: "HTML tags are written using:", o: ["{}","()","<>","[]"], a: 2 },
+        { q: "Which part of HTML shows content to users?", o: ["Head","Meta","Body","Title"], a: 2 },
+        { q: "HTML is a:", o: ["Programming language","Markup language","Database language","Styling language"], a: 1 },
+        { q: "HTML works on:", o: ["Only laptops","Only phones","Only tablets","All devices with browsers"], a: 3 },
+        { q: "Which part of HTML contains page information?", o: ["Body","Head","Footer","Section"], a: 1 },
+        { q: "HTML instructions are called:", o: ["Functions","Tags","Commands","Scripts"], a: 1 },
+        { q: "What does a closing tag do?", o: ["Starts content","Ends content","Styles content","Deletes content"], a: 1 },
+        { q: "HTML files are usually saved inside a:", o: ["Database","Browser","Project folder","Server memory"], a: 2 },
+        { q: "HTML tells the browser:", o: ["How to think","What content is","How to calculate","How to connect to internet"], a: 1 },
+        { q: "HTML is used to create:", o: ["Mobile apps","Websites","Operating systems","Games only"], a: 1 },
+        { q: "Which is NOT a browser?", o: ["Chrome","Firefox","VS Code","Edge"], a: 2 },
+        { q: "HTML code is read:", o: ["Randomly","Bottom-up","Top-down","Right-to-left"], a: 2 },
+        { q: "HTML files can be opened by:", o: ["Browsers","Compilers","Servers only","Databases"], a: 0 },
+        { q: "HTML focuses mainly on:", o: ["Logic","Design","Structure","Security"], a: 2 }
       ],
       intermediate: [
-        { q: "Which tag contains the page title?", o: ["<meta>","<title>","<head>","<body>"], a: 1 },
-        { q: "Which element is for navigation?", o: ["<nav>","<main>","<section>","<article>"], a: 0 }
+        { q: "Why is HTML called a markup language?", o: ["It adds logic","It marks content with meaning","It runs programs","It stores data"], a: 1 },
+        { q: "Why do most tags come in pairs?", o: ["To start and end content","To speed up loading","To add styling","To connect to servers"], a: 0 },
+        { q: "What happens if a closing tag is missing?", o: ["Browser crashes","Browser guesses structure","Website deletes itself","HTML stops working"], a: 1 },
+        { q: "Why is file organization important?", o: ["It improves understanding","It adds security","It adds speed automatically","It adds styling"], a: 0 },
+        { q: "What does the browser do first with HTML?", o: ["Executes logic","Reads instructions","Adds styling","Encrypts it"], a: 1 },
+        { q: "Why must HTML files be saved correctly?", o: ["For browsers to recognize them","For security","For internet access","For databases"], a: 0 },
+        { q: "HTML without CSS will still:", o: ["Work","Fail","Not display","Crash browsers"], a: 0 },
+        { q: "Why does HTML work on all devices?", o: ["It uses internet","Browsers understand it","It uses JavaScript","It is compiled"], a: 1 },
+        { q: "HTML describes content as:", o: ["Instructions","Algorithms","Data tables","Logic trees"], a: 0 },
+        { q: "Why is index.html commonly used?", o: ["It is faster","It is recognized automatically","It adds styling","It stores data"], a: 1 },
+        { q: "What happens if you name an HTML file wrongly?", o: ["Browser may not display it correctly","Internet disconnects","File deletes itself","Server crashes"], a: 0 },
+        { q: "HTML is best learned by:", o: ["Memorizing","Understanding structure","Copy-pasting","Guessing"], a: 1 },
+        { q: "Why does HTML read top to bottom?", o: ["Because of logic flow","Because browsers process sequentially","Because of styling","Because of security"], a: 1 },
+        { q: "Which best explains a website?", o: ["A text file with instructions","A compiled program","A database","An app"], a: 0 },
+        { q: "Why is HTML easy for beginners?", o: ["It hides errors","It is descriptive","It runs fast","It uses logic"], a: 1 },
+        { q: "HTML tags give content:", o: ["Meaning","Color","Logic","Security"], a: 0 },
+        { q: "What happens when HTML has errors?", o: ["Browser stops","Browser tries to fix","Website deletes","Server crashes"], a: 1 },
+        { q: "HTML structure helps:", o: ["Browsers understand content","Add animation","Secure data","Improve logic"], a: 0 },
+        { q: "HTML code is usually written in:", o: ["Code editors","Browsers only","Databases","Compilers"], a: 0 },
+        { q: "HTML files are part of a:", o: ["Website project","Browser system","Database","Server OS"], a: 0 }
       ],
       advanced: [
-        { q: "Which tag improves semantics for articles?", o: ["<div>","<span>","<article>","<figure>"], a: 2 }
+        { q: "Why is HTML considered forgiving?", o: ["It hides all errors","Browsers try to interpret errors","It has no rules","It auto-corrects everything"], a: 1 },
+        { q: "What is the main advantage of HTML being plain text?", o: ["Easy to edit anywhere","Faster internet","Better security","Automatic styling"], a: 0 },
+        { q: "Why does HTML not need compilation?", o: ["Browsers interpret it directly","It is encrypted","It is logic-based","It runs on servers"], a: 0 },
+        { q: "HTML focuses on meaning because:", o: ["Design is separate","Logic is included","It controls servers","It stores data"], a: 0 },
+        { q: "Why does HTML come before CSS and JS?", o: ["It structures content first","It is faster","It is easier","It controls logic"], a: 0 },
+        { q: "HTML structure affects:", o: ["Accessibility and SEO","Only appearance","Only speed","Only logic"], a: 0 },
+        { q: "Why is understanding HTML structure important?", o: ["It prevents confusion later","It adds styling","It adds security","It increases internet speed"], a: 0 },
+        { q: "HTML teaches beginners:", o: ["Logical thinking about content","Advanced programming","Security engineering","Database management"], a: 0 },
+        { q: "Why should beginners avoid memorizing tags?", o: ["Understanding structure matters more","Tags are useless","Browsers change","HTML has no rules"], a: 0 },
+        { q: "HTML allows learning web development because:", o: ["It shows immediate results","It hides output","It runs in background","It needs servers"], a: 0 },
+        { q: "Why is HTML a good first language?", o: ["It introduces structure without logic","It teaches databases","It requires math","It uses compilation"], a: 0 },
+        { q: "HTML teaches the relationship between:", o: ["Content and meaning","Logic and databases","Servers and networks","Security and encryption"], a: 0 },
+        { q: "HTML prepares learners for CSS because:", o: ["Structure comes before design","CSS replaces HTML","CSS adds logic","CSS controls servers"], a: 0 },
+        { q: "HTML errors are learning opportunities because:", o: ["Browsers explain structure issues","They break everything","They stop learning","They delete files"], a: 0 },
+        { q: "HTML content hierarchy helps:", o: ["Humans and machines understand content","Only browsers","Only designers","Only servers"], a: 0 },
+        { q: "HTML works offline because:", o: ["It does not depend on servers","It needs internet","It uses databases","It compiles online"], a: 0 },
+        { q: "HTML teaches discipline by:", o: ["Encouraging proper structure","Adding styling","Hiding mistakes","Removing rules"], a: 0 },
+        { q: "HTML file naming matters because:", o: ["Browsers rely on conventions","It affects logic","It affects security","It affects databases"], a: 0 },
+        { q: "HTML helps beginners understand that websites are:", o: ["Structured documents","Magic systems","Programs only","Databases"], a: 0 },
+        { q: "Mastering HTML fundamentals makes later learning:", o: ["Easier and clearer","Slower","Confusing","Unnecessary"], a: 0 }
       ]
     };
 
@@ -299,7 +353,7 @@
     // --- finishLevel: update local storage per student and send to Netlify function ---
     async function finishLevel() {
       const total = QUESTIONS_DATA[currentLevelKey].length;
-      const passed = currentScore >= PASS_MARK || currentScore === total; // for demo
+      const passed = currentScore >= PASS_MARK || currentScore === total; // pass logic
       document.getElementById('quiz-view').classList.add('hidden');
       document.getElementById('result-view').classList.remove('hidden');
       document.getElementById('result-score-text').innerText = `Final Score: ${currentScore} / ${total}`;
@@ -428,10 +482,10 @@
         items.forEach(it => {
           const li = document.createElement('li');
           li.className = 'p-2 border-b border-slate-100';
-          const name = it.studentName || it.Name || 'Unknown';
-          const level = it.level || it.Level || '';
-          const score = it.score || it.Score || '';
-          const ts = it.timestamp || new Date().toISOString();
+          const name = it.studentName || it["Student Name"] || it.Name || 'Unknown';
+          const level = it.level || it.Level || it["Level"] || '';
+          const score = it.score || it.Score || it["Score"] || '';
+          const ts = it.timestamp || it.Timestamp || new Date().toISOString();
           li.innerHTML = `<div class="font-semibold">${escapeHtml(name)} — ${escapeHtml(level)} <span class="text-slate-400 font-normal">(${escapeHtml(score)})</span></div>
                           <div class="text-slate-400 text-xs">${new Date(ts).toLocaleString()}</div>`;
           list.insertBefore(li, list.firstChild);
