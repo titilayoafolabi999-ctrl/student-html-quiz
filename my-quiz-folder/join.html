@@ -7,92 +7,132 @@
     <title>Join our HTML5, CSS & JS Community</title>
     
     <meta name="description" content="Level up your coding skills! Join our student group for HTML5, CSS, and JavaScript lessons.">
-
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://students-quiz.netlify.app/join">
     <meta property="og:title" content="Join our Web Development Study Group">
     <meta property="og:description" content="Master HTML, CSS, and JS. Punctuality and dedication required.">
-    <meta property="og:image" content="https://github.com/titilayoafolabi999-ctrl/student-html-quiz/blob/main/my-quiz-folder/file_000000000ec471f5849ef2cbf5e4dce7.png">
-
+    <meta property="og:image" content="https://raw.githubusercontent.com/titilayoafolabi999-ctrl/student-html-quiz/main/my-quiz-folder/file_000000000ec471f5849ef2cbf5e4dce7.png">
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:image" content="https://github.com/titilayoafolabi999-ctrl/student-html-quiz/blob/main/my-quiz-folder/file_000000000ec471f5849ef2cbf5e4dce7.png">
+    <meta property="twitter:image" content="https://raw.githubusercontent.com/titilayoafolabi999-ctrl/student-html-quiz/main/my-quiz-folder/file_000000000ec471f5849ef2cbf5e4dce7.png">
 
     <link rel="stylesheet" href="style.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 650px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .container { max-width: 650px; margin: 20px auto; padding: 30px; background: #fff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
         
-        /* The Logo Styling */
-        .logo-container { width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 3px solid #007bff; display: flex; align-items: center; justify-content: center; background: #eee; }
-        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        /* Logo Styling */
+        .logo-box { width: 110px; height: 110px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 4px solid #007bff; background: #fff; }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Success Counter Styling */
+        .counter-section { display: flex; justify-content: space-around; background: #007bff; color: white; padding: 15px; border-radius: 10px; margin: 20px 0; }
+        .counter-item h2 { margin: 0; font-size: 1.8rem; }
+        .counter-item p { margin: 0; font-size: 0.8rem; text-transform: uppercase; opacity: 0.9; }
+
+        /* Content Sections */
+        .section-title { color: #007bff; text-align: left; border-bottom: 2px solid #eef9ff; padding-bottom: 5px; margin-top: 25px; }
+        .roadmap-list { text-align: left; list-style: none; padding: 0; }
+        .roadmap-list li { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 6px; border-left: 4px solid #007bff; }
         
-        .benefits-section { text-align: left; background: #eef9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #bde4ff; }
-        .benefits-section h3 { margin-top: 0; color: #0056b3; }
+        .rules-box { text-align: left; background: #fff5f5; padding: 20px; border-left: 5px solid #ff4d4d; border-radius: 8px; margin: 20px 0; }
         
-        .rules-box { text-align: left; background: #fff5f5; padding: 20px; border-left: 5px solid #ff4d4d; border-radius: 4px; margin: 20px 0; }
-        .rules-box h3 { margin-top: 0; color: #c0392b; }
+        /* Button & Interaction */
+        .btn-join { display: none; background-color: #25D366; color: white; padding: 18px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 1.2rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+        .btn-join:hover { background-color: #128C7E; transform: translateY(-3px); }
         
-        .btn-join { display: none; background-color: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; margin-top: 20px; font-size: 1.1em; transition: 0.3s; border: none; cursor: pointer; }
-        .btn-join:hover { background-color: #128C7E; transform: scale(1.05); }
-        
-        .footer-links { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-        .back-link { color: #007bff; text-decoration: none; font-weight: 500; }
+        details { text-align: left; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 6px; margin-bottom: 10px; cursor: pointer; }
+        .back-link { display: inline-block; margin-top: 25px; color: #666; text-decoration: none; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="logo-container">
+        <div class="logo-box">
             <img src="my-quiz-folder/file_000000000ec471f5849ef2cbf5e4dce7.png" alt="Group Logo">
         </div>
 
-        <h1>Level Up Your Web Skills!</h1>
-        <p>Join a community dedicated to mastering HTML5, CSS, and JavaScript.</p>
+        <h1>Join the Learning Community</h1>
+        <p>Master Front-End Development with dedicated students.</p>
 
-        <div class="benefits-section">
-            <h3>Why Join Us?</h3>
-            <ul style="list-style-type: '✅ '; padding-left: 10px;">
-                <li><strong>Hands-on Projects:</strong> Practice real coding daily.</li>
-                <li><strong>Peer Support:</strong> Solve bugs with fellow students.</li>
-                <li><strong>Free Resources:</strong> Access exclusive roadmaps.</li>
-            </ul>
+        <div class="counter-section">
+            <div class="counter-item">
+                <h2 class="count" data-target="150">0</h2>
+                <p>Students</p>
+            </div>
+            <div class="counter-item">
+                <h2 class="count" data-target="45">0</h2>
+                <p>Projects</p>
+            </div>
+            <div class="counter-item">
+                <h2 class="count" data-target="12">0</h2>
+                <p>Mentors</p>
+            </div>
         </div>
 
+        <h3 class="section-title">🚀 Our Roadmap</h3>
+        <ul class="roadmap-list">
+            <li><strong>HTML5:</strong> Semantic structure & Web Accessibility</li>
+            <li><strong>CSS3:</strong> Layouts, Flexbox, & Grid Systems</li>
+            <li><strong>JavaScript:</strong> Logic, DOM Manipulation & APIs</li>
+        </ul>
+
+        <h3 class="section-title">❓ FAQ</h3>
+        <details>
+            <summary>Is this group for beginners?</summary>
+            <p>Yes! We start from the absolute basics of HTML.</p>
+        </details>
+        <details>
+            <summary>What if I'm not punctual?</summary>
+            <p>Punctuality is a core rule. Repeated lateness leads to removal to maintain group quality.</p>
+        </details>
+
         <div class="rules-box">
-            <h3>⚠️ Group Entry Requirements</h3>
-            <p>Failure to follow these will result in <strong>immediate removal</strong>:</p>
-            <ul style="padding-left: 20px;">
-                <li><strong>Strict Punctuality:</strong> Being late is not tolerated.</li>
-                <li><strong>No Spam/Ads:</strong> Keep it strictly educational.</li>
-                <li><strong>Respect:</strong> Be professional at all times.</li>
+            <h3 style="margin-top:0; color: #c0392b;">⚠️ Mandatory Rules</h3>
+            <ul style="padding-left: 20px; font-size: 0.95rem;">
+                <li><strong>Strict Punctuality:</strong> Attend sessions on time.</li>
+                <li><strong>Zero Spam:</strong> No advertisements or irrelevant links.</li>
+                <li><strong>Participation:</strong> Stay active to remain in the group.</li>
             </ul>
         </div>
 
         <div style="margin: 25px 0;">
-            <input type="checkbox" id="agree" onclick="toggleButton()"> 
-            <label for="agree" style="cursor: pointer;">I agree to the rules and understand the consequences.</label>
+            <input type="checkbox" id="agree" onclick="toggleJoinButton()"> 
+            <label for="agree" style="font-weight: bold; cursor: pointer;"> I agree to the rules & consequences.</label>
         </div>
 
-        <a href="https://chat.whatsapp.com/YOUR_LINK_HERE" id="joinLink" class="btn-join">Join WhatsApp Group</a>
+        <a href="https://chat.whatsapp.com/YOUR_LINK_HERE" id="joinLink" class="btn-join">Join WhatsApp Now</a>
 
-        <div class="footer-links">
-            <a href="index.html" class="back-link">← Return to Quiz</a>
+        <div>
+            <a href="index.html" class="back-link">← Return to Quiz Page</a>
         </div>
     </div>
 
     <script>
-        function toggleButton() {
-            const checkbox = document.getElementById("agree");
-            const button = document.getElementById("joinLink");
-            button.style.display = checkbox.checked ? "inline-block" : "none";
+        // Toggle Join Button
+        function toggleJoinButton() {
+            const isChecked = document.getElementById("agree").checked;
+            document.getElementById("joinLink").style.display = isChecked ? "inline-block" : "none";
         }
-    </script>
-</body>
-</html>        function toggleButton() {
-            const checkbox = document.getElementById("agree");
-            const button = document.getElementById("joinLink");
-            button.style.display = checkbox.checked ? "inline-block" : "none";
-        }
+
+        // Animated Counter Logic
+        const counters = document.querySelectorAll('.count');
+        const speed = 50;
+
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const inc = target / speed;
+
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + inc);
+                    setTimeout(updateCount, 20);
+                } else {
+                    counter.innerText = target + "+";
+                }
+            };
+            updateCount();
+        });
     </script>
 </body>
 </html>
